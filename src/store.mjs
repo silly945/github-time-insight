@@ -40,6 +40,8 @@ export async function loadData() {
   // defensive defaults for forward/backward compatibility
   data.lastRead = data.lastRead || {};
   data.meta = data.meta || { installedAt: Date.now(), lastPrune: dayKey() };
+  // one-time migration: purge ghost buckets (e.g. "1970-01-01") left by old builds
+  if (dropGhostDays(data)) await saveData(data);
   return data;
 }
 
@@ -115,6 +117,34 @@ export function setLastRead(data, repo, path, title, ts = Date.now()) {
   data.lastRead[repo] = { path, title: title || '', at: ts };
 }
 
+/** Remove ghost day buckets left by early builds (bad/zero timestamps). Returns true if anything was dropped. */
+export function dropGhostDays(data) {
+  if (!data || !data.days) return false;
+  let changed = false;
+  for (const key of Object.keys(data.days)) {
+    if (!isGhostDayKey(key)) continue;
+    delete data.days[key];
+    changed = true;
+  }
+  return changed;
+}
+
+/**
+ * A ghost bucket is one whose key is not a plausible real date: early builds
+ * derived the key from a 0/NaN timestamp and produced "1970-01-01" (and any
+ * year clearly before the extension could ever have run). Anything from 2000
+ * onwards is treated as a real bucket and never touched here.
+ */
+function isGhostDayKey(key) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(key));
+  if (!m) return true; // malformed key -> not a real day
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (mo < 1 || mo > 12 || d < 1 || d > 31) return true;
+  return y < 2000;
+}
+
 /** Drop day buckets older than the retention window, and stale lastRead entries. */
 export function prune(data, now = Date.now()) {
   const today = dayKey(now);
@@ -128,6 +158,11 @@ export function prune(data, now = Date.now()) {
       changed = true;
     }
   }
+
+  // Migration: early builds derived the day key from a 0/NaN timestamp and left
+  // ghost buckets behind (notably "1970-01-01"). They inflate all-time totals
+  // but belong to no real activity, so drop any bucket with no real timestamp.
+  if (dropGhostDays(data)) changed = true;
 
   // forget resume points untouched for 60 days
   for (const [repo, entry] of Object.entries(data.lastRead)) {

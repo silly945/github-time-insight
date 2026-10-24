@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3
+
+### Fixed
+- **Ghost day buckets are now cleaned up automatically.** Early builds derived the day key from a `0`/`NaN` timestamp, which left a `1970-01-01` bucket behind. It contained a handful of minutes that belonged to no real day, inflating all-time totals on the dashboard (today's numbers and the widget were unaffected). `loadData()` and `prune()` now drop any bucket whose key is not a plausible date (year < 2000, or malformed), and the fix is idempotent so it runs once and never touches real days.
+
+### Changed
+- Day buckets are only ever removed when their key cannot be a real date; every bucket from 2000 onwards is preserved, including ones with `first === 0`.
+
 ## 1.0.2
 
 ### Fixed
