@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GitHub Time Insight</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<main id="app">
+
+  <header class="top">
+    <div class="brand">
+      <span class="logo">◉</span>
+      <span>GitHub Time Insight</span>
+    </div>
+    <div class="top-actions">
+      <button id="btn-refresh" class="ghost" title="refresh">
+        <span id="lbl-refresh">↻</span>
+      </button>
+      <button id="btn-settings" class="ghost" title="settings">
+        <span id="lbl-settings">⚙</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="card hero">
+    <p id="headline" class="headline"></p>
+    <div class="hero-row">
+      <div class="stat">
+        <span id="stat-today" class="stat-num">0</span>
+        <span class="stat-label" id="lbl-hero-today">today</span>
+      </div>
+      <div class="stat">
+        <span id="stat-week-avg" class="stat-num">0</span>
+        <span class="stat-label" id="lbl-hero-week-avg">avg / day</span>
+      </div>
+      <div class="stat">
+        <span id="stat-streak" class="stat-num">0</span>
+        <span class="stat-label" id="lbl-hero-streak">day streak</span>
+      </div>
+    </div>
+    <div id="quality-text" class="quality-line"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="lbl-cats">What you did</h2>
+    <div id="cats" class="cats"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="lbl-heatmap">Last 12 weeks</h2>
+    <div class="heatmap-wrap">
+      <div id="heatmap" class="heatmap" role="img"></div>
+      <div class="heat-legend">
+        <span id="lbl-less">less</span>
+        <i data-l="0"></i><i data-l="1"></i><i data-l="2"></i><i data-l="3"></i><i data-l="4"></i>
+        <span id="lbl-more">more</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 id="lbl-hours">When you work</h2>
+    <div id="hours" class="hours"></div>
+    <div class="hours-axis"><span>0</span><span>6</span><span>12</span><span>18</span><span>23</span></div>
+  </section>
+
+  <section class="card">
+    <h2 id="lbl-trend">Trend</h2>
+    <div class="seg" id="trend-seg">
+      <button data-range="7" class="on" id="lbl-trend-7">7 days</button>
+      <button data-range="30" id="lbl-trend-30">30 days</button>
+    </div>
+    <div id="trend" class="trend"></div>
+    <div id="trend-axis" class="trend-axis"></div>
+    <div class="trend-foot"><span id="lbl-trend-avg">avg / active day</span> <b id="trend-avg">0</b></div>
+  </section>
+
+  <section class="card">
+    <h2 id="lbl-repos">Top repos</h2>
+    <ol id="repos" class="repos"></ol>
+  </section>
+
+  <section class="card">
+    <h2 id="lbl-resume">Pick up where you left off</h2>
+    <ul id="resume" class="resume"></ul>
+  </section>
+
+  <section class="card">
+    <h2 id="lbl-data">Take your data with you</h2>
+    <p class="hint" id="lbl-export-note">Everything stays on this device. Nothing is uploaded, ever.</p>
+    <div class="btn-row">
+      <button id="btn-export-json" class="primary"><span id="lbl-export-json">Export JSON</span></button>
+      <button id="btn-export-md"><span id="lbl-export-md">Weekly report (.md)</span></button>
+      <button id="btn-import"><span id="lbl-import">Import JSON</span></button>
+      <input id="file-import" type="file" accept="application/json,.json" hidden>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span id="foot-range"></span>
+    <span id="foot-version"></span>
+    <span id="lbl-footer"></span>
+  </footer>
+</main>
+
+<div id="drawer-mask" class="drawer-mask" hidden></div>
+
+<div id="drawer" class="drawer" hidden>
+  <div class="drawer-panel">
+    <header class="drawer-head">
+      <h2 id="lbl-settings-title">Settings</h2>
+      <button id="btn-close-drawer" class="ghost">✕</button>
+    </header>
+
+    <label class="field">
+      <span id="lbl-field-budget">Daily budget (minutes)</span>
+      <input id="set-budget" type="number" min="1" max="1440" step="5" inputmode="numeric">
+      <em class="hint small" id="lbl-field-budget-hint"></em>
+    </label>
+
+    <label class="field">
+      <span id="lbl-field-strict">Only count when the tab is visible</span>
+      <input id="set-strict" type="checkbox">
+    </label>
+
+    <label class="field">
+      <span id="lbl-field-widget">Show the corner widget</span>
+      <input id="set-widget" type="checkbox">
+    </label>
+
+    <label class="field">
+      <span id="lbl-field-lang">Language</span>
+      <select id="set-lang"></select>
+    </label>
+
+    <label class="field">
+      <span id="lbl-field-week">Week starts</span>
+      <select id="set-week"></select>
+    </label>
+
+    <div class="drawer-actions">
+      <button id="btn-save" class="primary"><span id="lbl-save">Save</span></button>
+      <button id="btn-clear" class="danger"><span id="lbl-clear">Clear all data</span></button>
+    </div>
+
+    <p class="hint small" id="lbl-prune">Data prunes automatically after 90 days.</p>
+    <p class="hint small" id="lbl-version"></p>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="shared.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

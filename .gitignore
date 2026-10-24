@@ -1,0 +1,23 @@
+# 密钥与签名文件，绝不入库 / Keys & signing files — never commit
+*.pem
+*.key
+*.crx
+*.zip
+
+# 本地偏好快照与调试产物 / Local prefs snapshots & debug output
+Preferences*
+pref.*.json
+p2.json
+final.json
+m_*.json
+m_*.js
+
+# 系统与编辑器 / OS & editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+node_modules/
+
+# 图标生成脚本（仅开发用）/ Icon generator (dev-only)
+make_icons.py

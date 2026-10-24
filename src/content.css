@@ -1,0 +1,234 @@
+/* GitHub Time Insight - widget styles
+ * Zero dependencies, pure CSS, dark-mode aware, mobile-first.
+ */
+
+#gti-widget {
+  position: fixed;
+  z-index: 2147483000;
+  right: 16px;
+  bottom: 16px;
+  width: 148px;
+  padding: 8px 10px 9px;
+  box-sizing: border-box;
+  font: 12px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: #1f2328;
+  background: #ffffff;
+  border: 1px solid rgba(31, 35, 40, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 6px 22px rgba(31, 35, 40, 0.16);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition: opacity 0.18s ease, transform 0.18s ease, width 0.16s ease,
+              height 0.16s ease, padding 0.16s ease;
+  opacity: 0.94;
+}
+
+#gti-widget:hover { opacity: 1; }
+
+/* ---------- collapsed: a single quiet dot ---------- */
+
+#gti-widget.gti-collapsed {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+#gti-widget.gti-collapsed .gti-card { display: none; }
+#gti-widget.gti-collapsed .gti-dot { display: block; }
+
+#gti-widget.gti-dot { display: none; }
+
+#gti-widget .gti-dot {
+  display: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #4ac26b, #2da44e);
+  box-shadow: 0 2px 8px rgba(45, 164, 78, 0.42);
+  cursor: pointer;
+}
+
+#gti-widget.gti-collapsed.gti-warn .gti-dot {
+  background: radial-gradient(circle at 32% 30%, #f0b849, #bf8700);
+  box-shadow: 0 2px 8px rgba(191, 135, 0, 0.42);
+}
+
+#gti-widget.gti-collapsed.gti-over .gti-dot {
+  background: radial-gradient(circle at 32% 30%, #ff8f8f, #d1242f);
+  box-shadow: 0 2px 8px rgba(209, 36, 47, 0.45);
+}
+
+/* ---------- header ---------- */
+
+#gti-widget .gti-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+  cursor: grab;
+}
+
+#gti-widget .gti-head:active { cursor: grabbing; }
+
+#gti-widget .gti-brand {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #656d76;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#gti-widget button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #656d76;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#gti-widget button:hover {
+  background: rgba(31, 35, 40, 0.08);
+  color: #1f2328;
+}
+
+/* ---------- numbers ---------- */
+
+#gti-widget .gti-total {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  margin: 1px 0 0;
+}
+
+#gti-widget .gti-num {
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+#gti-widget .gti-unit {
+  font-size: 10px;
+  color: #656d76;
+}
+
+#gti-widget .gti-sub {
+  font-size: 10px;
+  color: #656d76;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#gti-widget .gti-sub .gti-quality { opacity: 0.8; }
+
+/* ---------- budget bar ---------- */
+
+#gti-widget .gti-bar {
+  height: 4px;
+  margin: 6px 0 5px;
+  border-radius: 99px;
+  background: rgba(31, 35, 40, 0.1);
+  overflow: hidden;
+}
+
+#gti-widget .gti-bar > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 99px;
+  background: #2da44e;
+  transition: width 0.4s ease, background 0.3s ease;
+}
+
+#gti-widget.gti-warn .gti-bar > i { background: #bf8700; }
+#gti-widget.gti-over .gti-bar > i { background: #d1242f; }
+
+/* ---------- footer ---------- */
+
+#gti-widget .gti-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 10px;
+  color: #656d76;
+  font-variant-numeric: tabular-nums;
+}
+
+#gti-widget .gti-budget {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- idle: fade back so it never nags ---------- */
+
+#gti-widget.gti-idle {
+  opacity: 0.45;
+}
+
+#gti-widget.gti-idle:hover {
+  opacity: 1;
+}
+
+/* ---------- dark mode follows the system ---------- */
+
+@media (prefers-color-scheme: dark) {
+  #gti-widget {
+    color: #e6edf3;
+    background: #21262d;
+    border-color: rgba(240, 246, 252, 0.1);
+    box-shadow: 0 6px 22px rgba(1, 4, 9, 0.6);
+  }
+
+  #gti-widget .gti-brand,
+  #gti-widget .gti-sub,
+  #gti-widget .gti-unit,
+  #gti-widget .gti-foot {
+    color: #8b949e;
+  }
+
+  #gti-widget button { color: #8b949e; }
+  #gti-widget button:hover {
+    background: rgba(240, 246, 252, 0.1);
+    color: #e6edf3;
+  }
+
+  #gti-widget .gti-bar {
+    background: rgba(240, 246, 252, 0.12);
+  }
+}
+
+/* ---------- small phones: keep it out of the way ---------- */
+
+@media (max-width: 480px) {
+  #gti-widget {
+    width: 124px;
+    padding: 7px 9px 8px;
+  }
+
+  #gti-widget .gti-num { font-size: 19px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #gti-widget,
+  #gti-widget .gti-bar > i {
+    transition: none;
+  }
+}
