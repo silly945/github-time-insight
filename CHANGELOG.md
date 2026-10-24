@@ -14,6 +14,8 @@
 - The dot now has a 2.4 s breathing animation and a centre highlight, with a `prefers-reduced-motion` fallback.
 - Removed a malformed selector in `content.css` (`#gti-widget.gti-dot`, missing space) that could match the folded container.
 
+### Docs
+- README (zh + en) now matches the new interaction: a single click collapses the card; `LONG_PRESS_MS` documented as 0.8 s instead of 3 s.
 ### Art
 - New mascot: **Clockling** — an original round-headed sprite whose body is a clock face, with a needle antenna and a time-budget ring. Four moods: happy / warn / over / sleepy. Drawn procedurally, 100% original, no third-party trademarks involved.
 

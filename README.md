@@ -61,11 +61,11 @@
 
 它平常只是一个安静的圆点，显示今天的累计时间。
 点一下，它展开成一张卡片，告诉你今天、这周、这个月的分量。
-按住三秒，它收起，继续安静。
+再点一下，它收起，继续安静。
 
 *Most of the time it is just a quiet dot showing today's total.*
 *Tap it, and it unfolds into a card: today, this week, this month.*
-*Hold it for three seconds and it folds away, quiet again.*
+*Tap it again and it folds away, quiet again.*
 
 ---
 

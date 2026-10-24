@@ -44,7 +44,7 @@ On the extensions page, click **Pack extension**, then drag the resulting
 
 Most of the time it is just a quiet dot showing today's total.
 Tap it, and it unfolds into a card: today, this week, this month.
-Hold it for three seconds and it folds away, quiet again.
+Tap it again and it folds away, quiet again.
 
 ---
 
@@ -93,7 +93,7 @@ When the page can't, it is an estimate — and it says so.
 | `HEARTBEAT_MINUTES` | 1 minute | How often time is flushed to storage |
 | `RETENTION_DAYS` | 90 days | Records older than this are pruned |
 | `PING_MS` | 15 seconds | How often the content script reports in |
-| `LONG_PRESS_MS` | 3 seconds | Hold the dot this long to collapse it |
+| `LONG_PRESS_MS` | 0.8 seconds | Long-press fallback for collapsing (normal path is a plain tap) |
 
 ### Storage layout
 
