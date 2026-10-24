@@ -21,7 +21,7 @@
 
   var IDLE_MS = 60 * 1000;          // no pointer/key event for 60s => idle
   var PING_MS = 15 * 1000;          // report cadence while active
-  var LONG_PRESS_MS = 3000;         // hold the dot 3s to expand again
+  var LONG_PRESS_MS = 800;          // 兜底：长按 0.8s 也能展开
   var POS_KEY = 'gti_widget_pos';
   var COLLAPSE_KEY = 'gti_widget_collapsed';
 
@@ -155,7 +155,7 @@
     root.setAttribute('aria-live', 'polite');
 
     root.innerHTML =
-      '<div class="gti-dot" title="GitHub Time Insight"></div>' +
+      '<div class="gti-dot" title="点击展开 GitHub Time Insight"></div>' +
       '<div class="gti-card">' +
       '  <div class="gti-head">' +
       '    <span class="gti-brand">Time Insight</span>' +
@@ -213,7 +213,8 @@
         moved: false
       };
       root.setPointerCapture && root.setPointerCapture(e.pointerId);
-      e.preventDefault();
+      // 不再 preventDefault：preventDefault 会阻断 click，
+      // 导致收起后单击圆点无法展开（原 bug）。
     }
 
     function onMove(e) {
@@ -239,8 +240,21 @@
     window.addEventListener('pointerup', onUp);
     window.addEventListener('pointercancel', onUp);
 
-    // Long press the dot to bring the card back.
-    el.dot.addEventListener('pointerdown', function () {
+    // Tap (or long-press) the dot to bring the card back.
+    // 单击即可展开；同时保留长按作为兜底（部分触屏环境 click 可能被吞）。
+    function expandFromDot(e) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      clearTimeout(state.longPress);
+      state.longPress = null;
+      setCollapsed(false);
+    }
+
+    el.dot.addEventListener('click', expandFromDot);
+
+    el.dot.addEventListener('pointerdown', function (e) {
       clearTimeout(state.longPress);
       state.longPress = setTimeout(function () {
         setCollapsed(false);

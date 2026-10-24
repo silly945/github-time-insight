@@ -40,7 +40,8 @@
 #gti-widget.gti-collapsed .gti-card { display: none; }
 #gti-widget.gti-collapsed .gti-dot { display: block; }
 
-#gti-widget.gti-dot { display: none; }
+/* 修：原选择器少了空格，误命中折叠态容器；此处改为占位注释 */
+/* (removed buggy: #gti-widget.gti-dot { display:none } ) */
 
 #gti-widget .gti-dot {
   display: none;
@@ -50,6 +51,33 @@
   background: radial-gradient(circle at 32% 30%, #4ac26b, #2da44e);
   box-shadow: 0 2px 8px rgba(45, 164, 78, 0.42);
   cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: gti-dot-breathe 2.4s ease-in-out infinite;
+  position: relative;
+}
+
+/* 圆点内的小白点，暗示「可以点」 */
+#gti-widget .gti-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+@keyframes gti-dot-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #gti-widget .gti-dot { animation: none; }
 }
 
 #gti-widget.gti-collapsed.gti-warn .gti-dot {

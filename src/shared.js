@@ -73,7 +73,10 @@
   /* ---------------------------------------------------------------- time */
 
   function dayKey(ts) {
-    var d = new Date(typeof ts === 'number' ? ts : Date.now());
+    // 注意：0 / null / NaN / 负数都视为「未提供」，回退到当前时间。
+    // 否则 new Date(0) 会产生 1970-01-01，出现幽灵日期记录。
+    var valid = (typeof ts === 'number') && isFinite(ts) && ts > 0;
+    var d = new Date(valid ? ts : Date.now());
     var m = String(d.getMonth() + 1).padStart(2, '0');
     var day = String(d.getDate()).padStart(2, '0');
     return d.getFullYear() + '-' + m + '-' + day;
