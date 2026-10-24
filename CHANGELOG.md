@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2
+
+### Fixed
+- **Clicking the widget's hamburger menu dead-ended on `ERR_BLOCKED_BY_CLIENT`.** The menu button navigates to `kiwi-extension://<id>/src/dashboard.html`, but the manifest never declared that asset. Under MV3, Chromium blocks any navigation to an extension resource that is not listed in `web_accessible_resources`, so the page rendered "This page has been blocked by Chromium" instead of opening the dashboard.
+
+### Changed
+- Declared `web_accessible_resources` covering the dashboard, the popup and the icon set for `https://github.com/*`.
+
 ## 1.0.1
 
 ### Fixed
