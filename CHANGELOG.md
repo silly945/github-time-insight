@@ -1,4 +1,13 @@
 # Changelog
+## 1.0.4
+
+### Fixed
+- **The widget's dashboard button now actually opens the dashboard.** Clicking `☰` sent an `openDashboard` message that the service worker had no handler for, and the fallback `window.open()` call from a content script is silently blocked by mobile Chromium (Kiwi included), so the tap did nothing at all. The service worker now handles `openDashboard` and opens the page with `chrome.tabs.create()`, which works on every platform.
+- **The collapsed dot can be tapped to expand again.** `pointerdown` used to call `setPointerCapture()` on the widget root unconditionally, which stole the `click` from the dot while collapsed. Pointer capture is now only taken on the card header (the real drag handle).
+- **The dashboard no longer loads `shared.js` from outside the extension's graph.** `src/shared.js` was missing from `web_accessible_resources`, so `src/dashboard.html` and `src/popup.html` could fail to define `window.GTI` and start up broken depending on how the page was opened. It is now declared.
+
+### Changed
+- Removed the duplicated `openDashboard` send plus the dead `window.open()` fallback in `content.js`; there is now a single message and a single owner of the tab-opening logic.
 
 ## 1.0.3
 

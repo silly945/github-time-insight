@@ -190,11 +190,10 @@
 
     el.open.addEventListener('click', function (e) {
       e.stopPropagation();
+      // Let the service worker open the tab: chrome.tabs.create from the SW
+      // works on every platform, while window.open() from a content script is
+      // silently blocked by most mobile Chromium builds (the old bug).
       send({ type: 'openDashboard' });
-      try {
-        chrome.runtime.sendMessage({ type: 'openDashboard' });
-      } catch (err) {}
-      window.open(chrome.runtime.getURL('src/dashboard.html'), '_blank');
     });
 
     // --- dragging (pointer events, works with touch and mouse) ---
@@ -212,7 +211,11 @@
         top: root.offsetTop,
         moved: false
       };
-      root.setPointerCapture && root.setPointerCapture(e.pointerId);
+      // 只在拖拽手柄（card 头部）上捕获指针。之前无条件对 root 捕获，
+      // 会把 collapsed 状态下 dot 的 click 抢走，导致点小圆点没反应。
+      if (handle.classList.contains('gti-head') && root.setPointerCapture) {
+        try { root.setPointerCapture(e.pointerId); } catch (err) {}
+      }
       // 不再 preventDefault：preventDefault 会阻断 click，
       // 导致收起后单击圆点无法展开（原 bug）。
     }

@@ -397,6 +397,26 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           sendResponse({ ok: true });
           return;
         }
+        /* --- content script asks us to open the dashboard --- */
+        case 'openDashboard': {
+          // Opening a tab must be done from the service worker: a content
+          // script's window.open() is silently blocked in most mobile
+          // Chromium builds (Kiwi included), which is why the widget button
+          // used to do nothing at all.
+          try {
+            const url = chrome.runtime.getURL('src/dashboard.html');
+            const tabId = sender.tab ? sender.tab.id : -1;
+            if (tabId !== -1) {
+              await chrome.tabs.create({ url, index: sender.tab.index + 1 });
+            } else {
+              await chrome.tabs.create({ url });
+            }
+            sendResponse({ ok: true });
+          } catch (e) {
+            sendResponse({ ok: false, error: String(e && e.message || e) });
+          }
+          return;
+        }
 
         default:
           sendResponse({ ok: false, error: 'unknown message' });
