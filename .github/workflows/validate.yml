@@ -1,0 +1,66 @@
+name: validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Syntax check all scripts
+        run: |
+          for f in src/*.js src/*.mjs; do
+            echo "-- node --check $f"
+            node --check "$f" || exit 1
+          done
+          echo "all scripts OK"
+
+      - name: Validate manifest.json
+        run: |
+          python3 - <<'PYM'
+          import json, sys
+          m = json.load(open('manifest.json'))
+          required = ['manifest_version','name','version','description','permissions','host_permissions','action','background','content_scripts','options_page','icons']
+          missing = [k for k in required if k not in m]
+          if missing:
+              print('missing keys:', missing)
+              sys.exit(1)
+          assert m['manifest_version'] == 3, 'manifest_version must be 3'
+          perms = set(m['permissions'])
+          allowed = {'storage','tabs','alarms'}
+          extra = perms - allowed
+          if extra:
+              print('unexpected permissions:', extra)
+              sys.exit(1)
+          print('manifest OK:', m['name'], m['version'], sorted(perms))
+          PYM
+
+      - name: Size budget
+        run: |
+          total=$(du -sb . --exclude=.git --exclude=.github | cut -f1)
+          echo "repo size: $total bytes (budget 400000)"
+          if [ "$total" -gt 400000 ]; then echo 'size budget exceeded'; exit 1; fi
+
+      - name: Guard against leaked secrets
+        run: |
+          bad=$(git ls-files | grep -Ei '[.](pem|crx|p12|key)$' || true)
+          if [ -n "$bad" ]; then echo "forbidden files tracked:"; echo "$bad"; exit 1; fi
+          if git grep -nE 'ghp_[A-Za-z0-9]{30,}' -- . ':(exclude)*.md'; then
+            echo 'possible token found'; exit 1
+          fi
+          echo 'no secrets detected'
